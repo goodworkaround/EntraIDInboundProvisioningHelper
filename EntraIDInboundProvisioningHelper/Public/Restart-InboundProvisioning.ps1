@@ -1,16 +1,17 @@
-function Backup-InboundProvisioningMapping {
+<#
+.DESCRIPTION
+Perform a deep restart of inbound provisioning job
+#>
+function Restart-InboundProvisioning {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [string] $ObjectId,
-
-        [Parameter(Mandatory = $false)]
-        [string] $File = "backup.json"
+        [string] $ObjectId
     )
 
     process {
         Confirm-InboundProvisioningConnection
-
+        
         $ServicePrincipal = Get-MgServicePrincipal -ServicePrincipalId $ObjectId
 
         if($ServicePrincipal.ApplicationTemplateId -eq "ec7c5431-5d84-453f-80d3-e3385e284eef") {
@@ -23,10 +24,14 @@ function Backup-InboundProvisioningMapping {
 
         $Job = Get-MgServicePrincipalSynchronizationJob -ServicePrincipalId $ObjectId
         
-        $url = "https://graph.microsoft.com/v1.0/servicePrincipals/{0}/synchronization/jobs/{1}/schema" -f $ObjectId, $Job.Id
-        $JobSchema = Invoke-MgGraphRequest -Uri $Url -Method Get
-        
-        Write-Verbose "Saving backup to $File"
-        $JobSchema | ConvertTo-Json -Depth 100 | Out-File $File
+        $body = @{
+            criteria = @{
+                resetScope = "Full"
+            }
+        }
+        $url = "https://graph.microsoft.com/v1.0/servicePrincipals/{0}/synchronization/jobs/{1}/restart" -f $ObjectId, $Job.Id
+
+        Write-Verbose "Sending restart request to $url"
+        Invoke-MgGraphRequest -Method POST -Uri $url -Body ($body | ConvertTo-Json -Depth 100)
     }
 }

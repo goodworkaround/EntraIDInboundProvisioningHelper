@@ -21,9 +21,7 @@ function Restore-InboundProvisioningMapping {
 
         if($ServicePrincipal.ApplicationTemplateId -eq "ec7c5431-5d84-453f-80d3-e3385e284eef") {
             Write-Verbose "Service principal is for synching to Active Directory"
-            
-            # TODO: Find correct template id for Entra ID as this is created by copilot
-        } elseif($ServicePrincipal.ApplicationTemplateId -eq "c3c0e67f-580b-4e9e-9e3f-7f3e1b6a6f9c") {
+        } elseif($ServicePrincipal.ApplicationTemplateId -eq "40d8f01e-b0d7-4b4f-938b-05190712e598") {
             Write-Verbose "Service principal is for synching to Entra ID"
         } else {
             throw "Service principal is not for inbound provisioning"
