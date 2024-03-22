@@ -5,7 +5,7 @@ Formats an Inbound Provisioning Sync Rule expression for better readability
 function Format-InboundProvisioningExpression {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [string] $SyncRule,
 
         [Parameter(Mandatory = $false)]
@@ -21,7 +21,6 @@ function Format-InboundProvisioningExpression {
         $IndentationLevel = 0
         $NewLineAfter = $false
         $IndentAdjustmentAfter = 0
-        $PreviusCharacter = $null
 
         ($SyncRule.ToCharArray() | 
         ForEach-Object {
