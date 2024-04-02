@@ -5,10 +5,13 @@ function Get-InboundProvisioningDocumentation {
         [string] $ObjectId,
         
         [Parameter(Mandatory = $false)]
-        [string] $Title = "Inbound Provisioning Documentation",
+        [string] $Title = "Inbound Provisioning documentation",
 
         [Parameter(Mandatory = $false)]
-        [switch] $SuperDetailed
+        [switch] $SuperDetailed,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $DoNotIncludeDirectories
     )
 
     process {
@@ -16,151 +19,151 @@ function Get-InboundProvisioningDocumentation {
         $Job = Get-MgServicePrincipalSynchronizationJob -ServicePrincipalId $ServicePrincipal.Id
 
         $url = "https://graph.microsoft.com/v1.0/servicePrincipals/{0}/synchronization/jobs/{1}/schema" -f $ServicePrincipal.Id, $Job.Id
-        $JobSchema = Invoke-MgGraphRequest -Uri $Url -Method Get
-                
-        
+        $JobSchema = Invoke-MgGraphRequest -Uri $Url -Method Get        
 
         Restart-Markdown -InitialHeader $Title
         Add-Markdown ("This document describes the inbound provisioning job for the service principal **$($ServicePrincipal.DisplayName)**, which is configured to synchronize users to {0}." -f ($ServicePrincipal.ApplicationTemplateId -eq "ec7c5431-5d84-453f-80d3-e3385e284eef" ? "Active Directory" : "Entra ID")) 
 
         @{
-            "Property" = "Service Principal DisplayName"
+            "Property" = "Service principal displayname"
             "Value"    = $ServicePrincipal.DisplayName
         }, 
         @{
-            "Property" = "Service Principal ObjectId"
+            "Property" = "Service principal objectid"
             "Value"    = $ServicePrincipal.Id
         }, 
         @{
-            "Property" = "Service Principal ClientId"
+            "Property" = "Service principal clientid"
             "Value"    = $ServicePrincipal.AppId
         }, 
         @{
-            "Property" = "Inbound Provisioning Target Type"
+            "Property" = "Inbound provisioning target type"
             "Value"    = ($ServicePrincipal.ApplicationTemplateId -eq "ec7c5431-5d84-453f-80d3-e3385e284eef" ? "Active Directory" : "Entra ID")
         }, 
         @{
-            "Property" = "Provisioning API Endpoint"
+            "Property" = "Provisioning API endpoint"
             "Value"    = "https://graph.microsoft.com/v1.0/servicePrincipals/$($ServicePrincipal.Id)/synchronization/jobs/$($Job.Id)/bulkUpload"
         }, 
         @{
-            "Property" = "Provisioning State"
+            "Property" = "Provisioning state"
             "Value"    = $Job.Schedule.State
         } | 
         Add-MarkdownTable -Headers "Property", "Value"
 
-        Add-MarkdownHeader "Directories" -Level 2
+        if (!$DoNotIncludeDirectories.IsPresent) {
+            Add-MarkdownHeader "Directories" -Level 2
 
-        Foreach ($Directory in $JobSchema.directories) {
-            Add-MarkdownHeader $Directory.name -Level 3
+            Foreach ($Directory in $JobSchema.directories) {
 
-            if ($SuperDetailed.IsPresent) {
-                @{
-                    "Property" = "name"
-                    "Value"    = $Directory.name
-                }, 
-                @{
-                    "Property" = "id"
-                    "Value"    = $Directory.id
-                } | 
-                Add-MarkdownTable -Headers "Property", "Value"
-            }
-
-            Foreach ($Object in $Directory.objects) {
-                Add-MarkdownHeader $Object.name -Level 4
+                Add-MarkdownHeader $Directory.name -Level 3
 
                 if ($SuperDetailed.IsPresent) {
-                    $Object.metadata | 
-                    Add-MarkdownTable -Headers "Key", "Value"
+                    @{
+                        "Property" = "Name"
+                        "Value"    = $Directory.name
+                    }, 
+                    @{
+                        "Property" = "Id"
+                        "Value"    = $Directory.id
+                    } | 
+                    Add-MarkdownTable -Headers "Property", "Value"
                 }
 
-                Add-MarkdownHeader "Attributes" -Level 5
+                Foreach ($Object in $Directory.objects) {
+                    Add-MarkdownHeader $Object.name -Level 4
 
-                $Object.attributes | 
-                Sort-Object -Property Name | 
-                Add-MarkdownTable -Headers "Name", "Type", "Mutability", "Multivalued", "FlowNullValues", "Required", "CaseExact"
+                    if ($SuperDetailed.IsPresent) {
+                        $Object.metadata | 
+                        Add-MarkdownTable -Headers "Key", "Value"
+                    }
+
+                    Add-MarkdownHeader "Attributes" -Level 5
+
+                    $Object.attributes | 
+                    Sort-Object -Property Name | 
+                    Add-MarkdownTable -Headers "Name", "Type", "Mutability", "Multivalued", "FlowNullValues", "Required", "CaseExact"
+                }
             }
         }
 
-        Add-MarkdownHeader "Synchronization rules" -Level 2
+        # Add-MarkdownHeader "Synchronization rules" -Level 2
 
         Foreach ($SyncRule in $JobSchema.synchronizationRules) {
-            Add-MarkdownHeader $SyncRule.name -Level 3
+
+            if($SuperDetailed.IsPresent) {
+                Add-MarkdownHeader "Synchronization rule - $($SyncRule.name)" -Level 2
+            } else {
+                Add-MarkdownHeader "Synchronization rule" -Level 2
+            }
+            # Add-MarkdownHeader $SyncRule.name -Level 3
 
             if ($SuperDetailed.IsPresent) {
                 @{
-                    "Property" = "id"
+                    "Property" = "Id"
                     "Value"    = $SyncRule.id
                 },
                 @{
-                    "Property" = "name"
+                    "Property" = "Synchronization rule name"
                     "Value"    = $SyncRule.name
                 },
                 @{
-                    "Property" = "sourceDirectoryName"
+                    "Property" = "Source directory name"
                     "Value"    = $SyncRule.sourceDirectoryName
                 },
                 @{
-                    "Property" = "targetDirectoryName"
+                    "Property" = "Target directory name"
                     "Value"    = $SyncRule.targetDirectoryName
                 },
                 @{
-                    "Property" = "priority"
+                    "Property" = "Priority"
                     "Value"    = $SyncRule.priority
                 } | 
                 Add-MarkdownTable -Headers "Property", "Value"
             }
 
             Foreach ($ObjectMapping in $SyncRule.objectMappings) {
-                Add-MarkdownHeader $ObjectMapping.name -Level 4
+                Add-MarkdownHeader "Object mapping - $($ObjectMapping.name)" -Level 3
 
                 if ($SuperDetailed.IsPresent) {
                     @{
-                        "Property" = "name"
+                        "Property" = "Object mapping name"
                         "Value"    = $ObjectMapping.name
                     },
                     @{
-                        "Property" = "enabled"
+                        "Property" = "Enabled"
                         "Value"    = $ObjectMapping.enabled
                     },
                     @{
-                        "Property" = "sourceObjectName"
+                        "Property" = "Source object name"
                         "Value"    = $ObjectMapping.sourceObjectName
                     },
                     @{
-                        "Property" = "targetObjectName"
+                        "Property" = "Target object name"
                         "Value"    = $ObjectMapping.targetObjectName
                     },
                     @{
-                        "Property" = "flowTypes"
+                        "Property" = "Flow types"
                         "Value"    = $ObjectMapping.flowTypes
                     } | 
                     Add-MarkdownTable -Headers "Property", "Value"
                 }
 
-                Add-MarkdownHeader "Attribute mappings" -Level 5
+                Add-MarkdownHeader "Attribute mappings" -Level 4
 
                 Foreach ($AttributeMapping in $ObjectMapping.attributeMappings) {
-                    Add-MarkdownHeader $AttributeMapping.targetAttributeName -Level 6
+                    Add-MarkdownHeader $AttributeMapping.targetAttributeName -Level 5
             
                     @{
-                        "Property" = "matchingPriority"
+                        "Property" = "Matching priority"
                         "Value"    = $AttributeMapping.matchingPriority
                     },
                     @{
-                        "Property" = "flowType"
+                        "Property" = "Flow type"
                         "Value"    = $AttributeMapping.flowType
-                    },
-                    @{
-                        "Property" = "flowBehavior"
-                        "Value"    = $AttributeMapping.flowBehavior
-                    },
-                    @{
-                        "Property" = "flowBehavior"
-                        "Value"    = $AttributeMapping.flowBehavior
                     } | 
                     Add-MarkdownTable -Headers "Property", "Value"
 
+                    Add-Markdown "**Expression:**"
                     $AttributeMapping.source.expression | Format-InboundProvisioningExpression | Add-Markdown -Code
                 }
             }

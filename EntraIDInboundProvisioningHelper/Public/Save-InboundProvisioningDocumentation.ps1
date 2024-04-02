@@ -16,14 +16,17 @@ function Save-InboundProvisioningDocumentation {
         [switch] $SuperDetailed,
 
         [Parameter(Mandatory = $false, Position = 3)]
-        [string] $Title = "Inbound Provisioning Documentation",
+        [switch] $DoNotIncludeDirectories,
 
         [Parameter(Mandatory = $false, Position = 4)]
+        [string] $Title = "Inbound Provisioning Documentation",
+
+        [Parameter(Mandatory = $false, Position = 5)]
         [string] $AdditionalCss = ""
     )
 
     Process {
-        $GeneratedMarkdown = Get-InboundProvisioningDocumentation -ObjectId $ObjectId -Title $Title -SuperDetailed:$SuperDetailed.IsPresent
+        $GeneratedMarkdown = Get-InboundProvisioningDocumentation -ObjectId $ObjectId -Title $Title -SuperDetailed:$SuperDetailed.IsPresent -DoNotIncludeDirectories:$DoNotIncludeDirectories.IsPresent
         $GeneratedDocumentation = $GeneratedMarkdown | ConvertFrom-Markdown
 
         if($Format -eq "markdown") {
@@ -56,6 +59,7 @@ h5 {
 
 h6 {
     font-size: 1.3em;
+    margin: 30px 0 10px 0;
 }
 
 table {
