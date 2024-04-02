@@ -15,20 +15,10 @@ function Restore-InboundProvisioningMapping {
         Write-Verbose "Reading restore file $File"
         $Backup = Get-Content $OutputFile | ConvertFrom-Json -Depth 100
         
-        Confirm-InboundProvisioningConnection
+        $ServicePrincipal = Get-InboundProvisioningServicePrincipal -ObjectId $ObjectId
 
-        $ServicePrincipal = Get-MgServicePrincipal -ServicePrincipalId $ObjectId
-
-        if($ServicePrincipal.ApplicationTemplateId -eq "ec7c5431-5d84-453f-80d3-e3385e284eef") {
-            Write-Verbose "Service principal is for synching to Active Directory"
-        } elseif($ServicePrincipal.ApplicationTemplateId -eq "40d8f01e-b0d7-4b4f-938b-05190712e598") {
-            Write-Verbose "Service principal is for synching to Entra ID"
-        } else {
-            throw "Service principal is not for inbound provisioning"
-        }
-
-        $Job = Get-MgServicePrincipalSynchronizationJob -ServicePrincipalId $ObjectId
-        $JobSchema = Get-MgServicePrincipalSynchronizationJobSchema -ServicePrincipalId $ObjectId -SynchronizationJobId $Job.Id
+        $Job = Get-MgServicePrincipalSynchronizationJob -ServicePrincipalId $ServicePrincipal.Id
+        $JobSchema = Get-MgServicePrincipalSynchronizationJobSchema -ServicePrincipalId $ServicePrincipal.Id -SynchronizationJobId $Job.Id
 
         if($Backup.Id -ne $JobSchema.Id) {
             if(!$RestoreToDifferentServicePrincipal.IsPresent) {
@@ -62,7 +52,7 @@ function Restore-InboundProvisioningMapping {
             }
         }
 
-        $url = "https://graph.microsoft.com/v1.0/servicePrincipals/{0}/synchronization/jobs/{1}/schema" -f $ObjectId, $Job.Id
+        $url = "https://graph.microsoft.com/v1.0/servicePrincipals/{0}/synchronization/jobs/{1}/schema" -f $ServicePrincipal.Id, $Job.Id
         Invoke-MgGraphRequest -Method PUT -Uri $url -Body ($body | ConvertTo-Json -Depth 100)
     }
 }
