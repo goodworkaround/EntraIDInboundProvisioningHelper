@@ -5,27 +5,20 @@ function Backup-InboundProvisioningMapping {
         [string] $ObjectId,
 
         [Parameter(Mandatory = $false)]
-        [string] $File = "backup.json"
+        [string] $File = $null
     )
 
     process {
-        Confirm-InboundProvisioningConnection
-
-        $ServicePrincipal = Get-MgServicePrincipal -ServicePrincipalId $ObjectId
-
-        if($ServicePrincipal.ApplicationTemplateId -eq "ec7c5431-5d84-453f-80d3-e3385e284eef") {
-            Write-Verbose "Service principal is for synching to Active Directory"
-        } elseif($ServicePrincipal.ApplicationTemplateId -eq "40d8f01e-b0d7-4b4f-938b-05190712e598") {
-            Write-Verbose "Service principal is for synching to Entra ID"
-        } else {
-            throw "Service principal is not for inbound provisioning"
+        $ServicePrincipal = Get-InboundProvisioningServicePrincipal -ObjectId $ObjectId
+        $Job = Get-MgServicePrincipalSynchronizationJob -ServicePrincipalId $ServicePrincipal.Id
+        
+        $url = "https://graph.microsoft.com/v1.0/servicePrincipals/{0}/synchronization/jobs/{1}/schema" -f $ServicePrincipal.Id, $Job.Id
+        $JobSchema = Invoke-MgGraphRequest -Uri $Url -Method Get
+                
+        if(!$File) {
+            $File = "backup-inbound-provisioning-$($ServicePrincipal.Id)-{0}.json" -f (Get-Date).ToString("yyyyMMdd-HHmmss")
         }
 
-        $Job = Get-MgServicePrincipalSynchronizationJob -ServicePrincipalId $ObjectId
-        
-        $url = "https://graph.microsoft.com/v1.0/servicePrincipals/{0}/synchronization/jobs/{1}/schema" -f $ObjectId, $Job.Id
-        $JobSchema = Invoke-MgGraphRequest -Uri $Url -Method Get
-        
         Write-Verbose "Saving backup to $File"
         $JobSchema | ConvertTo-Json -Depth 100 | Out-File $File
     }
