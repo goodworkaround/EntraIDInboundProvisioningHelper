@@ -70,7 +70,7 @@ function Get-InboundProvisioningDocumentation {
                 }
 
                 Foreach ($Object in $Directory.objects) {
-                    Add-MarkdownHeader $Object.name -Level 4
+                    Add-MarkdownHeader "Object - $($Object.name)" -Level 4
 
                     if ($SuperDetailed.IsPresent) {
                         $Object.metadata | 
