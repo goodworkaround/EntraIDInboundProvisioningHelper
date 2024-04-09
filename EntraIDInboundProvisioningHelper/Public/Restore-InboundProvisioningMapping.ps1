@@ -13,7 +13,7 @@ function Restore-InboundProvisioningMapping {
 
     process {
         Write-Verbose "Reading restore file $File"
-        $Backup = Get-Content $OutputFile | ConvertFrom-Json -Depth 100
+        $Backup = Get-Content $File | ConvertFrom-Json -Depth 100
         
         $ServicePrincipal = Get-InboundProvisioningServicePrincipal -ObjectId $ObjectId
 
