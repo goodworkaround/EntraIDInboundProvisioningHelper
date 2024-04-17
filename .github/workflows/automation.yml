@@ -1,5 +1,7 @@
 name: Automation
 on:
+  repository_dispatch:
+    types: [create-pull-request]
   pull_request:
   push:
     branches: [ "main" ]
