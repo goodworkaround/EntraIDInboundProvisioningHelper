@@ -1,2 +1,3 @@
 EntraIDInboundProvisioningHelper/*.json
 EntraIDInboundProvisioningHelper/Testing.ps1
+generateddocs/
