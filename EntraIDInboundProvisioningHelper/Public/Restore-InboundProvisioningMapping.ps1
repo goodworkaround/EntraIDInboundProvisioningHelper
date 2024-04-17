@@ -1,12 +1,28 @@
+<#
+.SYNOPSIS
+Restores inbound provisioning mapping from a file created by the backup cmdlet.
+
+.DESCRIPTION
+Restores inbound provisioning mapping from a file created by the backup cmdlet.
+
+.EXAMPLE
+Restore-InboundProvisioningMapping -ObjectId e8787a3a-8d85-4ce6-98e7-d7ff17158ce6
+
+.EXAMPLE
+Restore-InboundProvisioningMapping -ObjectId e8787a3a-8d85-4ce6-98e7-d7ff17158ce6 -RestoreToDifferentServicePrincipal -File backup2.json
+#>
 function Restore-InboundProvisioningMapping {
     [CmdletBinding()]
     param (
+        # The object ID of the service principal with the Inbound Provisioning API
         [Parameter(Mandatory = $true)]
         [string] $ObjectId,
 
+        # The file to restore from
         [Parameter(Mandatory = $false)]
         [string] $File = "backup.json",
 
+        # Restore to a different service principal
         [Parameter(Mandatory = $false)]
         [switch] $RestoreToDifferentServicePrincipal
     )
