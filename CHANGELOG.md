@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.1.2...v1.1.3) (2024-04-17)
+
+
+### Bug Fixes
+
+* Trigger correctly on tag ([f34cc73](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/commit/f34cc73809d4b492c0abe21d624736ebec6a61f7))
+
 ## [1.1.2](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/1.1.1...v1.1.2) (2024-04-17)
 
 
