@@ -80,7 +80,7 @@ jobs:
         shell: pwsh
         run: |
           # Commit and push the changes back to the PR
-          git config --global user.email "no-one@goodworkaround.com"
+          git config --global user.email "noreply@goodworkaround.com"
           git config --global user.name "Marius Solbakken Mellum"
           git add --all
           git commit -m "chore: Update generated content"
