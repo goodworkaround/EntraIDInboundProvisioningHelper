@@ -4,7 +4,7 @@ A module for backing up and restoring Entra ID Inbound Provisioning sync rules
 
 | Metadata | Information |
 | --- | --- |
-| Version | 1.1.1 |
+| Version | 1.1.2 |
 | Required modules | Microsoft.Graph.Authentication |
 | Author | Marius Solbakken Mellum |
 | Company name | Fortytwo |
