@@ -80,8 +80,8 @@ jobs:
         shell: pwsh
         run: |
           # Commit and push the changes back to the PR
-          # git config --global user.email "marius.solbakken@fortytwo.io"
-          # git config --global user.name "Marius Solbakken"
+          git config --global user.email "no-one@goodworkaround.com"
+          git config --global user.name "Marius Solbakken Mellum"
           git add --all
           git commit -m "chore: Update generated content"
           git push origin ${{ github.event.pull_request.head.ref }}
