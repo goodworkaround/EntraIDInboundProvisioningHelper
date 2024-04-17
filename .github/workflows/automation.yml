@@ -93,5 +93,5 @@ jobs:
     steps:
       - uses: google-github-actions/release-please-action@a37ac6e4f6449ce8b3f7607e4d97d0146028dc0b # v4.1.0
         with:
-          # token: ${{ secrets.PAT }}
+          token: ${{ secrets.PAT }}
           release-type: simple
