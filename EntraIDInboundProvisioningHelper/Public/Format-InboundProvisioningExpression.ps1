@@ -15,16 +15,18 @@ function Format-InboundProvisioningExpression {
     process {
         # $SyncRule = 'Switch([active], "False", "False", "True", "True", "False")'
         # $SyncRule = 'Replace(Join("", "OU=Elever,OU=", [urn:ietf:params:scim:schemas:extension:iktagder:1.0:User:schoolcode], ",OU=", [urn:ietf:params:scim:schemas:extension:iktagder:1.0:User:schoolregionname], ",OU=Agderskolen,OU=IKT Agder,DC=entraidpoc,DC=iktagder,DC=no"), , "(\\W|\\w)+=,(\\W|\\w)+", , "OU=Default elev OU,OU=IKT Agder,DC=entraidpoc,DC=iktagder,DC=no", , )'
+        # $SyncRule = '[addresses[type eq "work" ].postalCode]'
 
         $InString = $false
         $IsEscaped = $false
         $IndentationLevel = 0
         $NewLineAfter = $false
         $IndentAdjustmentAfter = 0
+        $PreviusCharacter = $null
 
         ($SyncRule.ToCharArray() | 
         ForEach-Object {
-            if ($_ -eq ' ' -and !$InString) {
+            if ($_ -eq ' ' -and !$InString -and !($PreviusCharacter -match '[a-zA-Z0-9]')) {
                 # Do nothing with spaces not in strings
                 return
             } elseif ($_ -eq '(' -and !$InString) {
@@ -79,6 +81,6 @@ function Format-InboundProvisioningExpression {
             }
             
             
-        }) -join ""
+        }) -join "" -replace 'eq"',' eq "' # Worst workaround ever
     }
 }
