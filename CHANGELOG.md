@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.1.3...v1.1.4) (2024-06-05)
+
+
+### Bug Fixes
+
+* Workaround for Formatting causes error on complex types [#3](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/issues/3) ([b6cb951](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/commit/b6cb95103efca0312019148cb010eb8961ca6106))
+
 ## [1.1.3](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.1.2...v1.1.3) (2024-04-17)
 
 
