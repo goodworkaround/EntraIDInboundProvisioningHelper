@@ -14,11 +14,11 @@ function Confirm-InboundProvisioningConnection {
         }
 
         if($_C.Scopes -notcontains "Application.ReadWrite.All") {
-            throw "The current token does not have the required scope 'Application.ReadWrite.All', please connect using $ConnectString"
+            Write-Warning "The current token does not have the required scope 'Application.ReadWrite.All', please connect using $ConnectString"
         }
 
         if($_C.Scopes -notcontains "Synchronization.ReadWrite.All") {
-            throw "The current token does not have the required scope 'Synchronization.ReadWrite.All', please connect using $ConnectString"
+            Write-Warning "The current token does not have the required scope 'Synchronization.ReadWrite.All', please connect using $ConnectString"
         }
     }
 }
