@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.1.4...v1.1.5) (2024-06-14)
+
+
+### Bug Fixes
+
+* Switch to warnings instead of throwing exceptions ([49e69fd](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/commit/49e69fdf15ef3d2e6d76a23f5a0a58f075aaa511))
+
 ## [1.1.4](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.1.3...v1.1.4) (2024-06-05)
 
 
