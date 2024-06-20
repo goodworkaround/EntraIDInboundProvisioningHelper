@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.2.1...v1.2.2) (2024-06-20)
+
+
+### Bug Fixes
+
+* Releaste please manifest causing issues ([758e8e4](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/commit/758e8e480e96c94b0f4caa218cf791438275c418))
+
 ## [1.2.1](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.2.0...v1.2.1) (2024-06-20)
 
 
