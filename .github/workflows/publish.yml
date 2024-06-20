@@ -12,7 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Publish Module to PowerShell Gallery
-        uses: pcgeek86/publish-powershell-module-action@v20
-        id: publish-module
-        with:
-          NuGetApiKey: ${{ secrets.PS_GALLERY_KEY }}
+        shell: pwsh
+        run: |
+          Install-Module -Name Microsoft.Graph.Authentication -Scope CurrentUser -Force -Confirm:$false
+          $ModulePSD1 = Get-ChildItem -Recurse *.psd1
+          $ModulePSD1 |
+          ForEach-Object {
+            Test-ModuleManifest $_.FullName
+
+            $ModulePath = Split-Path -Parent $_.FullName
+            $ModuleName = $_.BaseName
+            Write-Host "Publishing module $ModuleName"
+            Publish-Module -Path $ModulePath -NuGetApiKey '${{ secrets.PS_GALLERY_KEY }}' -Verbose
+          }
