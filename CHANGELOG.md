@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.1.5...v1.2.0) (2024-06-20)
+
+
+### Features
+
+* Add publish to gallery ([e619c53](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/commit/e619c53d8020881386f418e5d11c832d08345f16))
+
 ## [1.1.5](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.1.4...v1.1.5) (2024-06-14)
 
 
