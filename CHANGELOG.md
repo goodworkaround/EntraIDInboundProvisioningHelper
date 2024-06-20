@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.2.0...v1.2.1) (2024-06-20)
+
+
+### Bug Fixes
+
+* Bugfix for deployment ([736a6cf](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/commit/736a6cff2a0fadeae6367263ac6d8bddaf6f192c))
+
 ## [1.2.0](https://github.com/goodworkaround/EntraIDInboundProvisioningHelper/compare/v1.1.5...v1.2.0) (2024-06-20)
 
 
