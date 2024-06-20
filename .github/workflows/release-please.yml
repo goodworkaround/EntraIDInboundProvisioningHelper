@@ -40,8 +40,8 @@ jobs:
           }
       
           # Update the psd1 file with the release-please version
-          if((Test-Path ".github/release-please-manifest.json")) {
-              $releasePleaseVersion = (Get-Content ".github/release-please-manifest.json" | ConvertFrom-Json -AsHashTable)."."
+          if((Test-Path ".release-please-manifest.json")) {
+              $releasePleaseVersion = (Get-Content ".release-please-manifest.json" | ConvertFrom-Json -AsHashTable)."."
               if($releasePleaseVersion -notlike "*.*.*") {
                   Write-Error "Invalid release-please version '($releasePleaseVersion)' found"
                   exit 1
@@ -95,4 +95,3 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           release-type: simple
-          manifest-file: .github/release-please-manifest.json
